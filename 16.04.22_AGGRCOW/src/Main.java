@@ -52,8 +52,9 @@ class Main {
      */
     public static int getMaxMin(ArrayList<Integer> stalls, int numCows){
 
-        int hi, lo, min, max, target, nextVal, answer = 0;          // min and max are stall bounds
+        int hi, lo, min, max, target, lastVal, nextVal, answer = 0;          // min and max are stall bounds
         int[] stallAssignment = new int[numCows];                   // lo and hi are search bounds
+        boolean success;
 
         lo = min = stalls.get(0);
         hi = max = stalls.get(stalls.size()-1);
@@ -62,15 +63,17 @@ class Main {
 
             target = lo + (hi-lo)/2;        // pick the midpoint of the array
 
-            boolean success = false;
-            Arrays.fill(stallAssignment, 0);
+            success = false;
             stallAssignment[0] = min;
 
             for(int i=1; i<numCows; i++){
 
-                if((stallAssignment[i-1] + target) > max) break;    // if there can't be more stalls
+                lastVal = stallAssignment[i-1];
 
-                nextVal = findNextHigher(stalls, stallAssignment[i-1], target);
+                if((lastVal + target) > max) break;    // if there can't be more stalls
+
+                nextVal = findNextHigher(stalls, lastVal, target);
+                System.out.println("nextval is " + nextVal);
 
                 if(nextVal == -1) break;                // if can't find any stalls higher than this
                 if(i == numCows-1) success = true;      // if placed all cows, search for a higher
@@ -97,11 +100,24 @@ class Main {
     public static int findNextHigher(ArrayList<Integer> elements, int current, int increment)
             throws IndexOutOfBoundsException{
 
-        int i = elements.indexOf(current);
+        int lo = 0, hi = elements.size()-1, mid, target = current+increment;
 
-        try{ while(elements.get(++i) < current + increment) continue;}
-        catch(IndexOutOfBoundsException e) { return -1; }
+        while(lo < hi){
 
-        return elements.get(i);
+            mid = lo + (hi-lo)/2;
+
+            //System.out.println(lo + " " + mid + " " + hi);
+            if (elements.get(mid) <= target) lo = mid+1;
+            else hi = mid;
+        }
+
+        return elements.get(hi);
+
+//        int i = elements.indexOf(current);
+//
+//        try{ while(elements.get(++i) < current + increment) continue;}
+//        catch(IndexOutOfBoundsException e) { return -1; }
+//
+//        return elements.get(i);
     }
 }

@@ -1,10 +1,9 @@
 /**
- * started April 21, 2016
- * from http://www.spoj.com/problems/GNYRO9F
+ * started April 20, 2016
+ * completed April 20, 2016
+ * from http://www.spoj.com/problems/SMPDIV
  *
- * Write a program which takes as input integers n and k and returns the number of bit strings x of n bits (out of 2?)
- * that satisfy AdjBC(x) = k. For example, for 5 bit strings, there are 6 ways of getting AdjBC(x) = 2:
- * 11100, 01110, 00111, 10111, 11101, 11011
+ * Print all integers ai such that ai is divisible by x and not divisible by y, where 1 < ai < n < 100000.
  */
 
 import java.util.*;
