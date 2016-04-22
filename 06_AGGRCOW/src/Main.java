@@ -19,14 +19,13 @@ class Main {
 
     public static void main (String[] args) throws java.lang.Exception
     {
-        emptyStalls = new ArrayList<>();
-
         Scanner sc = new Scanner(System.in);
         int tests = sc.nextInt();
 
         int stalls, cows;
         for(int i=0; i<tests; i++){
 
+            emptyStalls = new ArrayList<>();
             stalls = sc.nextInt();
             cows = sc.nextInt();
 
@@ -35,6 +34,11 @@ class Main {
                 int next = sc.nextInt();
                 emptyStalls.add(next);
             }
+
+//            System.out.println("Test " + i);
+//            System.out.println(stalls + " stalls, " + cows + " cows");
+//            System.out.print("Stalls at: ");
+//            for(Integer elt : emptyStalls) System.out.print(elt + " ");
 
             emptyStalls.sort(new Comparator<Integer>() {
                 @Override
@@ -45,13 +49,14 @@ class Main {
 
             //for(Integer elt : emptyStalls) System.out.print(elt + " ");
 
-                    System.out.println(getMaxMin(emptyStalls, cows));
+            //System.out.println("\n" + "Max Min is " + getMaxMin(emptyStalls, cows) + "\n");
+            System.out.println(getMaxMin(emptyStalls, cows));
         }
     }
 
     public static int getMaxMin(ArrayList<Integer> stalls, int numCows){
 
-        int min, max;
+        int min, max, answer = 0;
 
         int lo = min = stalls.get(0);
         int hi = max = stalls.get(stalls.size()-1);
@@ -71,31 +76,37 @@ class Main {
             int target = lo + (hi-lo)/2;
 
             boolean success = false;
-            stallAssignment[0] = lo;
+            Arrays.fill(stallAssignment, 0);
+            stallAssignment[0] = min;
 
             for(int i=1; i<numCows; i++){
 
                 if((stallAssignment[i-1] + target) > max){
 
-                    System.out.println("IMPOSSIBLE: Next should be above " + (stallAssignment[i-1] + target) + " and below " + max);
+//                    System.out.println("IMPOSSIBLE: Next should be above " + (stallAssignment[i-1] + target) + " and below " + max);
                     break;
                 }
 
                 int valueToAssign = findNextHigher(stalls, stallAssignment[i-1], target); // next one higher...
+
                 if(valueToAssign == -1) break;
                 stallAssignment[i] = valueToAssign;
-                if(i == numCows-1) success = true;
+                if(i == numCows-1) success = true;      // if placed all cows, search left
 
-                System.out.print("Target distance is " + target + " : ");
-                for(Integer elt : stallAssignment) System.out.print(elt + " ");
-                System.out.println();
+//                System.out.print("Target distance is " + target + " : ");
+//                for(Integer elt : stallAssignment) System.out.print(elt + " ");
+//                System.out.println();
             }
 
-            if(success) lo = target+1;
+            if(success) {
+
+                answer = target;
+                lo = target + 1;
+            }
             else hi = target;
         }
 
-        return lo;
+        return answer;
     }
 
     public static int findNextHigher(ArrayList<Integer> elements, int current, int increment) throws IndexOutOfBoundsException{
