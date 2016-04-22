@@ -15,7 +15,7 @@ import java.lang.*;
 class Main {
 
     static int maxiMin;
-    static ArrayList<Short> emptyStalls;
+    static ArrayList<Integer> emptyStalls;
 
     public static void main (String[] args) throws java.lang.Exception
     {
@@ -32,49 +32,79 @@ class Main {
 
             for(int j=0; j<stalls; j++) {
 
-                short next = sc.nextShort();
+                int next = sc.nextInt();
                 emptyStalls.add(next);
             }
 
-            emptyStalls.sort(new Comparator<Short>() {
+            emptyStalls.sort(new Comparator<Integer>() {
                 @Override
-                public int compare(Short o1, Short o2) {
+                public int compare(Integer o1, Integer o2) {
                     return o1-o2;
                 }
             });
 
-            System.out.println(emptyStalls);
+            //for(Integer elt : emptyStalls) System.out.print(elt + " ");
 
-            placeCow(cows, 100000, (short) -1, 0);
-
-            System.out.println("The minimum is " + maxiMin);
+                    System.out.println(getMaxMin(emptyStalls, cows));
         }
     }
 
-    public static void placeCow(int cowsLeft, int minDistance, short lastStall, int lastPosition){
+    public static int getMaxMin(ArrayList<Integer> stalls, int numCows){
 
-        if((cowsLeft == 0)){setMaxiMin(minDistance); return;}
+        int min, max;
 
-        for(int i=0; i<emptyStalls.size() - lastPosition; i++){
+        int lo = min = stalls.get(0);
+        int hi = max = stalls.get(stalls.size()-1);
+        int[] stallAssignment = new int[numCows];
 
-            short nextStall = emptyStalls.get(i);
+        /**
+         * Algorithm does a binary search for the max minimum.
+         * (1) define the bounds of the search as the first and last stall
+         * (2) choose a midpoint
+         * (3) evaluate the stalls greedily (i.e. choose the first stall, then add the
+         * midpoint value until either (a) no more cows are left or (b) all the stalls are
+         * filled and there are cows left).
+         * (4) reevaluate the bounds and search again
+         */
+        while(lo < hi){
 
-            //System.out.println("The last position is : " + lastPosition);
-            System.out.println("The last stall is : " + lastStall);
-            System.out.println("The next stall is : " + nextStall);
+            int target = lo + (hi-lo)/2;
 
-            if(!(lastStall == -1))
-                if((nextStall - lastStall) < minDistance) minDistance = (nextStall - lastStall);
+            boolean success = false;
+            stallAssignment[0] = lo;
 
-            System.out.println("The maximin distance is " + maxiMin);
-            lastStall = nextStall;
+            for(int i=1; i<numCows; i++){
 
-            placeCow(cowsLeft-1,  minDistance, lastStall, lastPosition+1);
+                if((stallAssignment[i-1] + target) > max){
+
+                    System.out.println("IMPOSSIBLE: Next should be above " + (stallAssignment[i-1] + target) + " and below " + max);
+                    break;
+                }
+
+                int valueToAssign = findNextHigher(stalls, stallAssignment[i-1], target); // next one higher...
+                if(valueToAssign == -1) break;
+                stallAssignment[i] = valueToAssign;
+                if(i == numCows-1) success = true;
+
+                System.out.print("Target distance is " + target + " : ");
+                for(Integer elt : stallAssignment) System.out.print(elt + " ");
+                System.out.println();
+            }
+
+            if(success) lo = target+1;
+            else hi = target;
         }
+
+        return lo;
     }
 
-    public static void setMaxiMin(int minDistance){
+    public static int findNextHigher(ArrayList<Integer> elements, int current, int increment) throws IndexOutOfBoundsException{
 
-        if (minDistance > maxiMin) maxiMin = minDistance;
+        int i = elements.indexOf(current);
+
+        try{ while(elements.get(++i) < current + increment) continue;}
+        catch(IndexOutOfBoundsException e){return -1;}
+
+        return elements.get(i);
     }
 }
