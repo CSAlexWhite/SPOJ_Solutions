@@ -1,7 +1,7 @@
 /**
  * started April 21, 2016
  * finished April 22, 2016
- * from http://www.spoj.com/problems/GNYRO9F
+ * from http://www.spoj.com/problems/AGGRCOW
  *
  * Farmer John has built a new long barn, with N (2 <= N <= 100,000) stalls. The stalls are located along a
  * straight line at positions x1,...,xN (0 <= xi <= 1,000,000,000).  His C (2 <= C <= N) cows don't like this

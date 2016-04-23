@@ -1,6 +1,5 @@
 /**
  * started April 20, 2016
- * completed
  * from http://www.spoj.com/problems/SHPATH
  *
  * You are given a list of cities. Each direct connection between two cities has its transportation cost
